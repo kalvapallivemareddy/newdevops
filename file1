@@ -2,3 +2,41 @@ this is my first file on 13 march 2018
 second change in file1
 third change in file1
 fourth change in file1
+Setting up a GitHub webhook in Jenkins
+ March 27, 2014  Josh Reichardt  DevOps, Sysadmin, Ubuntu
+This post will detail the steps to have Jenkins automatically create a build if it detects changes to  a GitHub repository.  This can be a very useful improvement to your continuous integration setup with Jenkins because this method is only telling Jenkins to attempt a new build when a change is detected rather than polling on an interval, which can be a little bit inefficient.
+
+There are a few steps necessary to get this process working correctly that I would like to highlight in case I have to do this again or if anybody else would like to set this up.  Most of the guides that I found were very out of date so their instructions were a little bit unclear and misleading.
+
+The first step is to configure Jenkins to talk to GitHub.  You will need to download and install the GitHub plugin (I am using version 1.8 as of this writing).  Manage Jenkins -> Manage Plugins -> Available -> GitHub plugin
+
+GitHub plugin
+
+After this is installed you can either create a new build or configure an existing build job.  Since I already have one set up I will just modify it to use the GitHub hook.  There are a few things that need to be changed.
+
+First, you will need to add your github repo:
+
+source code management
+
+Then you will then have to tick the box indicated below – “Build when a change is pushed to GitHub”
+
+build when github changes
+
+Also note that Jenkins should have an SSH key already associated with the desired GitHub project.
+
+You’re pretty close to being done.  The final step is to head over to GitHub and adjust the settings for the project by creating a webhook for your Jenkins server.  Select the repo you’re interested in and click Settings.  If you aren’t an admin of the repo you will not be able to modify the settings, so talk to an owner to either finish this step for you or have them grant you admin to make the change yourself.
+
+The GitHub steps are pretty straight forward.  Open the “Webhooks & Services” tab -> choose “Configure Services” -> find the Jenkins (GitHub plugin option) and fill it in with a similar URL to the following:
+
+http://<Name of Jenkins server>:8080/github-webhook/
+jenkins webhook
+
+Make sure to tick the active box and ensure it works by running the “Test Hook”.  If it comes back with a payload deployed message you should be good to go.
+
+UPDATE
+
+I found an issue that was causing us issues.  There is a check box near the bottom of the authentication section labeled “Prevent Cross Site Request Forgery exploits” that needs to be unchecked in order for this particular method to work.
+
+Disable forgery option
+
+Let me know if you have any issues, I haven’t found a good way to debug or test outside of the message returned from the GitHub configuration page.  I did find another alternative method that may work but didn’t need to use it so I can update this if necessary.

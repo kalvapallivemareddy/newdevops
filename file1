@@ -17,8 +17,6 @@ After this is installed you can either create a new build or configure an existi
 First, you will need to add your github repo:
 
 source code management
-
-
 Then you will then have to tick the box indicated below – “Build when a change is pushed to GitHub”
 
 build when github changes
